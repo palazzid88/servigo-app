@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 
-export default function PagoTurno() {
+export default function PagoTurnoPage() {
   const params = useSearchParams();
 
   const email = params.get("email");
@@ -43,22 +43,17 @@ export default function PagoTurno() {
           Para confirmar tu turno necesitamos una <strong>seña</strong>.
         </p>
 
-        <p className="text-gray-600 mb-2 text-sm">
-          📅 Fecha: {date}
-        </p>
-
-        <p className="text-gray-600 mb-4 text-sm">
-          ⏰ Hora: {time}
-        </p>
+        <p className="text-gray-600 text-sm">📅 {date}</p>
+        <p className="text-gray-600 text-sm mb-4">⏰ {time}</p>
 
         <p className="text-gray-600 mb-6 text-sm">
-          ⚠️ La seña corresponde únicamente a la reserva del turno.
-          El costo final será definido por el taller luego de revisar el vehículo.
+          ⚠️ La seña es únicamente para reservar el turno.  
+          El costo final del servicio será definido por el taller luego de revisar el vehículo.
         </p>
 
         <button
           onClick={handlePagar}
-          className="bg-[#f29101] text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-[#d88000] transition"
+          className="bg-[#f29101] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#d88000]"
         >
           Pagar seña
         </button>
