@@ -88,23 +88,6 @@ export default function PagoTurnoClient() {
           className="mt-6 w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-3 rounded-lg transition"        >
           {loading ? "Redirigiendo..." : "Pagar"}
         </button>
-
-        <button
-  onClick={handlePago}
-  disabled={loading}
-  className="mt-6 w-full bg-red-600 text-white py-3 rounded"
->
-  TEST BOTON
-</button>
-
-<button
-  onClick={handlePago}
-  disabled={loading}
-  className="mt-6 w-full !bg-blue-600 !text-white py-3 rounded-lg"
->
-  {loading ? "Redirigiendo..." : "Pagar"}
-</button>
-
       </div>
     </div>
   );
