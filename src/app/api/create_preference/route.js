@@ -22,18 +22,19 @@ const response = await preference.create({
       },
     ],
     payer: {
-      eventId: eventId,
       email: body.email,
-      name: "Test",
-      surname: "User",
+    },
+    metadata: {
+      eventId: body.eventId,
+      email: body.email,
+      date: body.date,
+      time: body.time,
     },
     back_urls: {
-      success: "http://127.0.0.1:3000/success",
-      failure: "http://127.0.0.1:3000/failure",
-      pending: "http://127.0.0.1:3000/pending",
+      success: "http://localhost:3000/success",
+      failure: "http://localhost:3000/failure",
+      pending: "http://localhost:3000/pending",
     },
-    auto_return: "approved",
-    binary_mode: true,
   },
 });
 console.log("PREFERENCE:", preference);
