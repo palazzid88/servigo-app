@@ -1,64 +1,10 @@
-"use client";
+import { Suspense } from "react";
+import FailureClient from "./FailureClient";
 
-import { useSearchParams, useRouter } from "next/navigation";
-
-export default function FailurePage() {
-  const params = useSearchParams();
-  const router = useRouter();
-
-  const email = params.get("email");
-  const date = params.get("date");
-  const time = params.get("time");
-  const eventId = params.get("eventId");
-
-  const handleRetry = () => {
-    // volver a la página de pago
-    router.push(`/pago-turno?email=${email}&date=${date}&time=${time}&eventId=${eventId}`);
-  };
-
-
-
-
-const handleCancel = async () => {
-  try {
-    await fetch("/api/cancel-event", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ eventId }),
-    });
-
-    alert("Turno cancelado correctamente");
-
-    router.push("/"); // o donde quieras redirigir
-
-  } catch (error) {
-    console.error(error);
-    alert("Error al cancelar turno");
-  }
-};
-
-
-
-
+export default function Page() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>❌ El pago no pudo completarse</h1>
-
-      <p>Puedes intentar nuevamente o cancelar el turno.</p>
-
-      <hr />
-
-      <div style={{ marginTop: "1rem" }}>
-        <button onClick={handleRetry}>
-          🔁 Volver a pagar
-        </button>
-
-        <button onClick={handleCancel} style={{ marginLeft: "1rem" }}>
-          ❌ Cancelar turno
-        </button>
-      </div>
-    </div>
+    <Suspense fallback={<div>Cargando...</div>}>
+      <FailureClient />
+    </Suspense>
   );
 }
