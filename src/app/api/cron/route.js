@@ -1,39 +1,48 @@
-import { kv } from "@vercel/kv";
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const keys = await kv.keys("reservation:*");
+  try {
+    const { kv } = await import("@vercel/kv");
 
-  const reservations = await Promise.all(
-    keys.map(async (key) => {
-      const data = await kv.get(key);
-      return { key, ...data };
-    })
-  );
+    const keys = await kv.keys("reservation:*");
 
-  const now = Date.now();
+    const reservations = await Promise.all(
+      keys.map(async (key) => {
+        const data = await kv.get(key);
+        return { key, ...data };
+      })
+    );
 
-  for (const r of reservations) {
-    if (
-      r.status === "pending" &&
-      now - r.createdAt > 2 * 60 * 1000
-    ) {
-      // cancelar evento
-      await fetch("https://tu-dominio.com/api/cancel-event", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ eventId: r.key.replace("reservation:", "") }),
-      });
+    const now = Date.now();
 
-      // actualizar estado
-      await kv.set(r.key, {
-        ...r,
-        status: "expired",
-      });
+    for (const r of reservations) {
+      if (
+        r.status === "pending" &&
+        now - r.createdAt > 2 * 60 * 1000
+      ) {
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cancel-event`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventId: r.key.replace("reservation:", ""),
+          }),
+        });
+
+        await kv.set(r.key, {
+          ...r,
+          status: "expired",
+        });
+      }
     }
-  }
 
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true });
+
+  } catch (error) {
+    console.error("CRON ERROR:", error);
+    return NextResponse.json({ ok: false });
+  }
 }
