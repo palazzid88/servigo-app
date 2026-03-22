@@ -1,9 +1,4 @@
 import { NextResponse } from "next/server";
-import mercadopago from "mercadopago";
-
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN,
-});
 
 export async function POST(req) {
   try {
@@ -11,37 +6,48 @@ export async function POST(req) {
 
     console.log("Webhook recibido:", body);
 
-    // Mercado Pago manda distintos tipos de notificaciones
+    // Mercado Pago envía diferentes tipos de eventos
+    // Nos interesa cuando hay un pago
     if (body.type === "payment") {
       const paymentId = body.data.id;
 
-      // Consultamos el pago real a MP (clave 🔥)
-      const payment = await mercadopago.payment.findById(paymentId);
+      console.log("Payment ID:", paymentId);
 
-      const status = payment.body.status;
+      // Consultar el pago en Mercado Pago API
+      const response = await fetch(
+        `https://api.mercadopago.com/v1/payments/${paymentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+          },
+        }
+      );
 
-      console.log("Estado del pago:", status);
+      const payment = await response.json();
 
-      if (status === "approved") {
-        // 👉 ACÁ confirmás en tu DB
-        console.log("✅ Pago aprobado");
+      console.log("Payment info:", payment);
 
-      } else if (status === "pending") {
-        console.log("⏳ Pago pendiente");
+      // Validar estado del pago
+      if (payment.status === "approved") {
+        const metadata = payment.metadata;
 
-      } else if (status === "rejected") {
-        console.log("❌ Pago rechazado");
+        const eventId = metadata?.eventId;
+
+        console.log("Pago aprobado para eventId:", eventId);
+
+        // 👉 Acá es donde vas a manejar tu lógica:
+        // - marcar como pagado
+        // - cancelar timer
+        // - confirmar reserva
+
+      } else {
+        console.log("Pago no aprobado:", payment.status);
       }
     }
 
-    return NextResponse.json({ received: true });
-
+    return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Error en webhook:", error);
-
-    return NextResponse.json(
-      { error: "Error en webhook" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Webhook error" }, { status: 500 });
   }
 }
