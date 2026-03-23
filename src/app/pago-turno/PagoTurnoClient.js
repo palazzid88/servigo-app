@@ -61,6 +61,26 @@ const precio = 100;
       setLoading(true);
       setError("");
 
+            await fetch("/api/bookings/init", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uid: reserva.uid,
+          email: reserva.email,
+          attendeeName: reserva.attendeeName,
+          title: reserva.title,
+          description: reserva.description,
+          location: reserva.location,
+          eventTypeSlug: reserva.eventTypeSlug,
+          hostName: reserva.hostName,
+          attendeeStartTime: reserva.attendeeStartTime,
+          endTime: reserva.endTime,
+          price: precio,
+        }),
+      });
+
       const res = await fetch("/api/create-preference", {
         method: "POST",
         headers: {
