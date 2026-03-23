@@ -59,7 +59,7 @@ export default function PagoTurnoClient() {
       setLoading(true);
       setError("");
 
-      const res = await fetch("/api/create_preference", {
+      const res = await fetch("/api/create-preference", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
