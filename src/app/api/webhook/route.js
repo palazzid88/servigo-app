@@ -53,12 +53,16 @@ export async function POST(req) {
     if (status === "approved") {
       console.log("Pago aprobado para uid:", uid);
 
-      await updateBooking(uid, {
-        status: "approved",
-        paymentId: String(paymentId),
-      });
+    const updated = await updateBooking(uid, {
+      status: "approved",
+      paymentId: String(paymentId),
+    });
 
+    if (!updated) {
+      console.log("⚠️ No existía booking para actualizar:", uid);
+    } else {
       console.log("✅ Booking actualizado a APPROVED:", uid);
+    }
     }
 
     else if (status === "pending" || status === "in_process") {

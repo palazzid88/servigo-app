@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { saveBooking } from "@/lib/bookings";
+import { saveBooking, getBooking } from "@/lib/bookings";
 
 export async function POST(req) {
   try {
@@ -50,15 +50,23 @@ export async function POST(req) {
 
     console.log("BOOKING GUARDADO:", uid);
 
+    const saved = await getBooking(uid);
+
+    console.log("BOOKING LEÍDO DESPUÉS DE GUARDAR:", saved);
+
     return NextResponse.json({
       ok: true,
       booking,
+      saved,
     });
   } catch (error) {
     console.error("Error init booking:", error);
 
     return NextResponse.json(
-      { error: "Error creando reserva" },
+      {
+        error: "Error creando reserva",
+        detail: error?.message || "Error desconocido",
+      },
       { status: 500 }
     );
   }
