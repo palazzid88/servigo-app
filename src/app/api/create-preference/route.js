@@ -63,6 +63,7 @@ export async function POST(req) {
           failure: "https://servigo-app.vercel.app/failure",
           pending: "https://servigo-app.vercel.app/pending",
         },
+        notification_url: "https://servigo-app.vercel.app/api/webhook",
         auto_return: "approved",
       },
     });
