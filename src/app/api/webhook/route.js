@@ -1,17 +1,19 @@
-// src/app/api/webhook/route.js
 import { NextResponse } from "next/server";
+import { updateBooking } from "@/lib/bookings";
 
 export async function POST(req) {
   try {
     const body = await req.json();
     console.log("Webhook recibido:", body);
 
+    // Solo procesamos eventos de pago
     if (body?.type !== "payment" || !body?.data?.id) {
       return NextResponse.json({ ok: true, ignored: true });
     }
 
     const paymentId = body.data.id;
 
+    // Consultar pago en Mercado Pago
     const mpRes = await fetch(
       `https://api.mercadopago.com/v1/payments/${paymentId}`,
       {
@@ -47,35 +49,57 @@ export async function POST(req) {
       return NextResponse.json({ ok: true, warning: "missing_uid" });
     }
 
+    // 🔥 ACTUALIZAR REDIS SEGÚN ESTADO
     if (status === "approved") {
       console.log("Pago aprobado para uid:", uid);
 
-      // TODO:
-      // 1. marcar reserva como paid/approved en Redis o DB
-      // 2. guardar paymentId
-      // 3. evitar cancelación por cron
-      // 4. opcional: enviar mail / redirigir UI por consulta posterior
-    } else if (status === "pending" || status === "in_process") {
+      await updateBooking(uid, {
+        status: "approved",
+        paymentId: String(paymentId),
+      });
+
+      console.log("✅ Booking actualizado a APPROVED:", uid);
+    }
+
+    else if (status === "pending" || status === "in_process") {
       console.log("Pago pendiente para uid:", uid);
 
-      // TODO:
-      // marcar reserva como pending_payment
-    } else if (status === "rejected" || status === "cancelled") {
+      await updateBooking(uid, {
+        status: "pending",
+        paymentId: String(paymentId),
+      });
+
+      console.log("🟡 Booking actualizado a PENDING:", uid);
+    }
+
+    else if (status === "rejected" || status === "cancelled") {
       console.log("Pago rechazado/cancelado para uid:", uid);
 
-      // TODO:
-      // marcar reserva como rejected
-      // luego el cron o una lógica inmediata la cancela en calendario
-    } else {
+      await updateBooking(uid, {
+        status: "rejected",
+        paymentId: String(paymentId),
+      });
+
+      console.log("❌ Booking actualizado a REJECTED:", uid);
+    }
+
+    else {
       console.log("Estado no manejado aún:", status, "uid:", uid);
 
-      // TODO:
-      // registrar estado para depuración
+      await updateBooking(uid, {
+        status: status,
+        paymentId: String(paymentId),
+      });
     }
 
     return NextResponse.json({ ok: true });
+
   } catch (error) {
     console.error("Error en webhook:", error);
-    return NextResponse.json({ error: "Webhook error" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Webhook error" },
+      { status: 500 }
+    );
   }
 }

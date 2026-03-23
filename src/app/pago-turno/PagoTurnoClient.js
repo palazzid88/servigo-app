@@ -154,9 +154,9 @@ const precio = 100;
             </p>
           )}
 
-          {/* <p>
+          <p>
             <span className="font-semibold">ID reserva:</span> {reserva.uid}
-          </p> */}
+          </p>
         </div>
 
         <div className="my-6 border-t"></div>
