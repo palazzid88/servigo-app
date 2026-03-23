@@ -25,19 +25,26 @@ const response = await preference.create({
       email: body.email,
     },
     metadata: {
-      eventId: body.eventId,
-      email: body.email,
-      date: body.date,
-      time: body.time,
-    },
+  uid,
+  email,
+  attendeeName,
+    title,
+    description,
+    location,
+    eventTypeSlug,
+    hostName,
+    attendeeStartTime,
+    endTime,
+    price
+},
     back_urls: {
-      success: "http://localhost:3000/success",
-      failure: "http://localhost:3000/failure",
-      pending: "http://localhost:3000/pending",
+      success: "https://servigo-app.vercel.app//success",
+      failure: "https://servigo-app.vercel.app//failure",
+      pending: "https://servigo-app.vercel.app//pending",
     },
   },
 });
-console.log("PREFERENCE:", preference);
+console.log("response",response);
 
     return NextResponse.json({
       id: response.id,
