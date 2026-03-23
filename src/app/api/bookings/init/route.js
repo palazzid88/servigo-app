@@ -44,7 +44,11 @@ export async function POST(req) {
       updatedAt: new Date().toISOString(),
     };
 
+    console.log("CREANDO BOOKING:", booking);
+
     await saveBooking(booking);
+
+    console.log("BOOKING GUARDADO:", uid);
 
     return NextResponse.json({
       ok: true,

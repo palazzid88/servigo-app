@@ -61,7 +61,7 @@ const precio = 100;
       setLoading(true);
       setError("");
 
-            await fetch("/api/bookings/init", {
+      const initRes = await fetch("/api/bookings/init", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,10 +83,10 @@ const precio = 100;
 
       const initData = await initRes.json();
 
-        console.log("INIT BOOKING:", initData);
+      console.log("INIT BOOKING:", initData);
 
       if (!initRes.ok) {
-        throw new Error("No se pudo crear la reserva inicial");
+        throw new Error(initData?.error || "No se pudo crear la reserva inicial");
       }
 
       const res = await fetch("/api/create-preference", {
