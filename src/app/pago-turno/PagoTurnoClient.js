@@ -83,6 +83,8 @@ const precio = 100;
 
       const initData = await initRes.json();
 
+      
+
       console.log("INIT BOOKING:", initData);
 
       if (!initRes.ok) {
