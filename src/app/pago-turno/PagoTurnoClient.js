@@ -81,6 +81,14 @@ const precio = 100;
         }),
       });
 
+      const initData = await initRes.json();
+
+        console.log("INIT BOOKING:", initData);
+
+      if (!initRes.ok) {
+        throw new Error("No se pudo crear la reserva inicial");
+      }
+
       const res = await fetch("/api/create-preference", {
         method: "POST",
         headers: {
