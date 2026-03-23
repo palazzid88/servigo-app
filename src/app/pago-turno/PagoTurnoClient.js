@@ -54,6 +54,8 @@ export default function PagoTurnoClient() {
     !reserva.attendeeName ||
     !reserva.attendeeStartTime;
 
+const precio = 100;
+
   const handlePago = async () => {
     try {
       setLoading(true);
@@ -75,7 +77,7 @@ export default function PagoTurnoClient() {
           hostName: reserva.hostName,
           attendeeStartTime: reserva.attendeeStartTime,
           endTime: reserva.endTime,
-          price: 3000,
+          price: precio,
         }),
       });
 
@@ -132,9 +134,9 @@ export default function PagoTurnoClient() {
             </p>
           )}
 
-          <p>
+          {/* <p>
             <span className="font-semibold">ID reserva:</span> {reserva.uid}
-          </p>
+          </p> */}
         </div>
 
         <div className="my-6 border-t"></div>
@@ -144,7 +146,7 @@ export default function PagoTurnoClient() {
             Total a pagar
           </p>
           <p className="text-3xl font-bold text-green-600 mt-2">
-            $3000
+            {precio}
           </p>
         </div>
 
