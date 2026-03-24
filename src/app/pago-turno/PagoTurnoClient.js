@@ -1,4 +1,6 @@
 "use client";
+//Pago Turno Client: Componente React para mostrar los detalles de la reserva y manejar el proceso de pago con Mercado Pago. Lee los parámetros de la URL, muestra la información al usuario y redirige al checkout de Mercado Pago al hacer clic en "Pagar". También maneja errores y estados de carga.
+
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
