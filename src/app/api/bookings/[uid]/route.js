@@ -1,9 +1,20 @@
 import { NextResponse } from "next/server";
 import { getBooking } from "@/lib/bookings";
 
-export async function GET(req, { params }) {
+export async function GET(req, context) {
   try {
-    const booking = await getBooking(params.uid);
+    const { uid } = await context.params;
+
+    console.log("UID recibido en route [uid]:", uid);
+
+    if (!uid) {
+      return NextResponse.json(
+        { error: "UID no recibido en la ruta" },
+        { status: 400 }
+      );
+    }
+
+    const booking = await getBooking(uid);
 
     if (!booking) {
       return NextResponse.json(
@@ -20,7 +31,10 @@ export async function GET(req, { params }) {
     console.error("Error obteniendo booking:", error);
 
     return NextResponse.json(
-      { error: "Error obteniendo reserva" },
+      {
+        error: "Error obteniendo reserva",
+        detail: error?.message || "Error desconocido",
+      },
       { status: 500 }
     );
   }
