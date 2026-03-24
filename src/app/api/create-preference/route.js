@@ -59,9 +59,9 @@ export async function POST(req) {
           price,
         },
         back_urls: {
-          success: "https://servigo-app.vercel.app/success",
-          failure: "https://servigo-app.vercel.app/failure",
-          pending: "https://servigo-app.vercel.app/pending",
+          success: `https://servigo-app.vercel.app/success?uid=${uid}`,
+          failure: `https://servigo-app.vercel.app/failure?uid=${uid}`,
+          pending: `https://servigo-app.vercel.app/pending?uid=${uid}`,
         },
         notification_url: "https://servigo-app.vercel.app/api/webhook",
         auto_return: "approved",
